@@ -953,6 +953,15 @@
     New->setImplicit(isImplicit);
     break;
   }
+  case attr::HIPPinnedShadow: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) HIPPinnedShadowAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
   case attr::Hot: {
     bool isInherited = Record.readInt();
     bool isImplicit = Record.readInt();
@@ -1480,6 +1489,15 @@
     bool isImplicit = Record.readInt();
     unsigned Spelling = Record.readInt();
     New = new (Context) NoThrowAttr(Range, Context, Spelling);
+    cast<InheritableAttr>(New)->setInherited(isInherited);
+    New->setImplicit(isImplicit);
+    break;
+  }
+  case attr::NoUniqueAddress: {
+    bool isInherited = Record.readInt();
+    bool isImplicit = Record.readInt();
+    unsigned Spelling = Record.readInt();
+    New = new (Context) NoUniqueAddressAttr(Range, Context, Spelling);
     cast<InheritableAttr>(New)->setInherited(isInherited);
     New->setImplicit(isImplicit);
     break;

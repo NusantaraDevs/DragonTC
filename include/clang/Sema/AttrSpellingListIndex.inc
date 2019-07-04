@@ -669,6 +669,13 @@
         return 1;
     break;
   }
+  case AT_HIPPinnedShadow: {
+    if (Name == "hip_pinned_shadow" && SyntaxUsed == 0 && Scope == "")
+        return 0;
+    if (Name == "__hip_pinned_shadow__" && SyntaxUsed == 3 && Scope == "")
+        return 1;
+    break;
+  }
   case AT_Hot: {
     if (Name == "hot" && SyntaxUsed == 0 && Scope == "")
         return 0;
@@ -1129,6 +1136,11 @@
         return 1;
     if (Name == "nothrow" && SyntaxUsed == 3 && Scope == "")
         return 2;
+    break;
+  }
+  case AT_NoUniqueAddress: {
+    if (Name == "no_unique_address" && SyntaxUsed == 1 && Scope == "")
+        return 0;
     break;
   }
   case AT_NonNull: {

@@ -3766,6 +3766,42 @@ const char *GuardedVarAttr::getSpelling() const {
   }
 }
 
+HIPPinnedShadowAttr *HIPPinnedShadowAttr::clone(ASTContext &C) const {
+  auto *A = new (C) HIPPinnedShadowAttr(getLocation(), C, getSpellingListIndex());
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->Implicit = Implicit;
+  return A;
+}
+
+void HIPPinnedShadowAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  switch (SpellingListIndex) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << " __attribute__((hip_pinned_shadow))";
+    break;
+  }
+  case 1 : {
+    OS << " __declspec(__hip_pinned_shadow__)";
+    break;
+  }
+}
+}
+
+const char *HIPPinnedShadowAttr::getSpelling() const {
+  switch (SpellingListIndex) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "hip_pinned_shadow";
+  case 1:
+    return "__hip_pinned_shadow__";
+  }
+}
+
 HotAttr *HotAttr::clone(ASTContext &C) const {
   auto *A = new (C) HotAttr(getLocation(), C, getSpellingListIndex());
   A->Inherited = Inherited;
@@ -5963,6 +5999,36 @@ const char *NoThrowAttr::getSpelling() const {
     return "nothrow";
   case 2:
     return "nothrow";
+  }
+}
+
+NoUniqueAddressAttr *NoUniqueAddressAttr::clone(ASTContext &C) const {
+  auto *A = new (C) NoUniqueAddressAttr(getLocation(), C, getSpellingListIndex());
+  A->Inherited = Inherited;
+  A->IsPackExpansion = IsPackExpansion;
+  A->Implicit = Implicit;
+  return A;
+}
+
+void NoUniqueAddressAttr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
+  switch (SpellingListIndex) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    break;
+  case 0 : {
+    OS << " [[no_unique_address]]";
+    break;
+  }
+}
+}
+
+const char *NoUniqueAddressAttr::getSpelling() const {
+  switch (SpellingListIndex) {
+  default:
+    llvm_unreachable("Unknown attribute spelling!");
+    return "(No spelling)";
+  case 0:
+    return "no_unique_address";
   }
 }
 
@@ -11332,6 +11398,8 @@ const char *Attr::getSpelling() const {
     return cast<GuardedByAttr>(this)->getSpelling();
   case attr::GuardedVar:
     return cast<GuardedVarAttr>(this)->getSpelling();
+  case attr::HIPPinnedShadow:
+    return cast<HIPPinnedShadowAttr>(this)->getSpelling();
   case attr::Hot:
     return cast<HotAttr>(this)->getSpelling();
   case attr::IBAction:
@@ -11446,6 +11514,8 @@ const char *Attr::getSpelling() const {
     return cast<NoThreadSafetyAnalysisAttr>(this)->getSpelling();
   case attr::NoThrow:
     return cast<NoThrowAttr>(this)->getSpelling();
+  case attr::NoUniqueAddress:
+    return cast<NoUniqueAddressAttr>(this)->getSpelling();
   case attr::NonNull:
     return cast<NonNullAttr>(this)->getSpelling();
   case attr::NotTailCalled:
@@ -11896,6 +11966,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<GuardedByAttr>(this)->clone(C);
   case attr::GuardedVar:
     return cast<GuardedVarAttr>(this)->clone(C);
+  case attr::HIPPinnedShadow:
+    return cast<HIPPinnedShadowAttr>(this)->clone(C);
   case attr::Hot:
     return cast<HotAttr>(this)->clone(C);
   case attr::IBAction:
@@ -12010,6 +12082,8 @@ Attr *Attr::clone(ASTContext &C) const {
     return cast<NoThreadSafetyAnalysisAttr>(this)->clone(C);
   case attr::NoThrow:
     return cast<NoThrowAttr>(this)->clone(C);
+  case attr::NoUniqueAddress:
+    return cast<NoUniqueAddressAttr>(this)->clone(C);
   case attr::NonNull:
     return cast<NonNullAttr>(this)->clone(C);
   case attr::NotTailCalled:
@@ -12460,6 +12534,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<GuardedByAttr>(this)->printPretty(OS, Policy);
   case attr::GuardedVar:
     return cast<GuardedVarAttr>(this)->printPretty(OS, Policy);
+  case attr::HIPPinnedShadow:
+    return cast<HIPPinnedShadowAttr>(this)->printPretty(OS, Policy);
   case attr::Hot:
     return cast<HotAttr>(this)->printPretty(OS, Policy);
   case attr::IBAction:
@@ -12574,6 +12650,8 @@ void Attr::printPretty(raw_ostream &OS, const PrintingPolicy &Policy) const {
     return cast<NoThreadSafetyAnalysisAttr>(this)->printPretty(OS, Policy);
   case attr::NoThrow:
     return cast<NoThrowAttr>(this)->printPretty(OS, Policy);
+  case attr::NoUniqueAddress:
+    return cast<NoUniqueAddressAttr>(this)->printPretty(OS, Policy);
   case attr::NonNull:
     return cast<NonNullAttr>(this)->printPretty(OS, Policy);
   case attr::NotTailCalled:

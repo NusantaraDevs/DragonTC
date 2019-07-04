@@ -481,6 +481,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
       const auto *A = cast<GuardedVarAttr>(At);
       return A->clone(C);
     }
+    case attr::HIPPinnedShadow: {
+      const auto *A = cast<HIPPinnedShadowAttr>(At);
+      return A->clone(C);
+    }
     case attr::Hot: {
       const auto *A = cast<HotAttr>(At);
       return A->clone(C);
@@ -724,6 +728,10 @@ Attr *instantiateTemplateAttribute(const Attr *At, ASTContext &C, Sema &S,
     }
     case attr::NoThrow: {
       const auto *A = cast<NoThrowAttr>(At);
+      return A->clone(C);
+    }
+    case attr::NoUniqueAddress: {
+      const auto *A = cast<NoUniqueAddressAttr>(At);
       return A->clone(C);
     }
     case attr::NonNull: {
@@ -1594,6 +1602,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
     case attr::GuardedVar: {
       return nullptr;
     }
+    case attr::HIPPinnedShadow: {
+      return nullptr;
+    }
     case attr::Hot: {
       return nullptr;
     }
@@ -1763,6 +1774,9 @@ Attr *instantiateTemplateAttributeForDecl(const Attr *At,
       return nullptr;
     }
     case attr::NoThrow: {
+      return nullptr;
+    }
+    case attr::NoUniqueAddress: {
       return nullptr;
     }
     case attr::NonNull: {

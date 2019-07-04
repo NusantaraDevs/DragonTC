@@ -395,6 +395,7 @@ class AMDGPULDSF32Intrin<string clang_builtin> :
     [IntrArgMemOnly, NoCapture<0>, ImmArg<2>, ImmArg<3>, ImmArg<4>]
 >;
 
+// FIXME: The m0 argument should be moved after the normal arguments
 class AMDGPUDSOrderedIntrinsic : Intrinsic<
   [llvm_i32_ty],
   // M0 = {hi16:address, lo16:waveID}. Allow passing M0 as a pointer, so that
@@ -405,6 +406,7 @@ class AMDGPUDSOrderedIntrinsic : Intrinsic<
    llvm_i32_ty, // scope
    llvm_i1_ty,  // isVolatile
    llvm_i32_ty, // ordered count index (OA index), also added to the address
+                // gfx10: bits 24-27 indicate the number of active threads/dwords
    llvm_i1_ty,  // wave release, usually set to 1
    llvm_i1_ty], // wave done, set to 1 for the last ordered instruction
   [NoCapture<0>,
@@ -1371,6 +1373,43 @@ def int_amdgcn_ds_gws_barrier :
   [SDNPMemOperand]
 >;
 
+// llvm.amdgcn.ds.gws.sema.v(i32 resource_id)
+def int_amdgcn_ds_gws_sema_v :
+  GCCBuiltin<"__builtin_amdgcn_ds_gws_sema_v">,
+  Intrinsic<[],
+  [llvm_i32_ty],
+  [IntrConvergent, IntrInaccessibleMemOnly], "",
+  [SDNPMemOperand]
+>;
+
+// llvm.amdgcn.ds.gws.sema.br(i32 vsrc, i32 resource_id)
+def int_amdgcn_ds_gws_sema_br :
+  GCCBuiltin<"__builtin_amdgcn_ds_gws_sema_br">,
+  Intrinsic<[],
+  [llvm_i32_ty, llvm_i32_ty],
+  [IntrConvergent, IntrInaccessibleMemOnly], "",
+  [SDNPMemOperand]
+>;
+
+// llvm.amdgcn.ds.gws.sema.p(i32 resource_id)
+def int_amdgcn_ds_gws_sema_p :
+  GCCBuiltin<"__builtin_amdgcn_ds_gws_sema_p">,
+  Intrinsic<[],
+  [llvm_i32_ty],
+  [IntrConvergent, IntrInaccessibleMemOnly], "",
+  [SDNPMemOperand]
+>;
+
+// llvm.amdgcn.ds.gws.sema.release.all(i32 resource_id)
+def int_amdgcn_ds_gws_sema_release_all :
+  GCCBuiltin<"__builtin_amdgcn_ds_gws_sema_release_all">,
+  Intrinsic<[],
+  [llvm_i32_ty],
+  [IntrConvergent, IntrInaccessibleMemOnly], "",
+  [SDNPMemOperand]
+>;
+
+
 // Copies the source value to the destination value, with the guarantee that
 // the source value is computed as if the entire program were executed in WQM.
 def int_amdgcn_wqm : Intrinsic<[llvm_any_ty],
@@ -1487,7 +1526,7 @@ def int_amdgcn_mov_dpp8 :
 
 def int_amdgcn_s_get_waveid_in_workgroup :
   GCCBuiltin<"__builtin_amdgcn_s_get_waveid_in_workgroup">,
-  Intrinsic<[llvm_i32_ty], [], [IntrReadMem]>;
+  Intrinsic<[llvm_i32_ty], [], [IntrReadMem, IntrInaccessibleMemOnly]>;
 
 //===----------------------------------------------------------------------===//
 // Deep learning intrinsics.

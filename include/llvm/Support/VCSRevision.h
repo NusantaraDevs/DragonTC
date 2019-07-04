@@ -1,2 +1,2 @@
-#define LLVM_REVISION "aa6b4fa248b2c1f75d492bafba137af760a14795"
-#define LLVM_REPOSITORY "/home/najahi/dragontc/llvm-project/llvm"
+#define LLVM_REVISION "96717fb651308cf534a3e7881c4fd991c56479e6"
+#define LLVM_REPOSITORY "/home/najahi/dtc/llvm-project/llvm"

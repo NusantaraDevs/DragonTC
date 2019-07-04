@@ -37,6 +37,7 @@ DIAG(err_fe_unable_to_open_output, CLASS_ERROR, (unsigned)diag::Severity::Error,
 DIAG(err_function_needs_feature, CLASS_ERROR, (unsigned)diag::Severity::Error, "always_inline function %1 requires target feature '%2', but would be inlined into function %0 that is compiled without support for '%2'", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_header_module_requires_modules, CLASS_ERROR, (unsigned)diag::Severity::Error, "header module compilation requires '-fmodules', '-std=c++2a', or '-fmodules-ts'", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_ifunc_resolver_return, CLASS_ERROR, (unsigned)diag::Severity::Error, "ifunc resolver function must return a pointer", 0, SFINAE_SubstitutionFailure, false, true, 0)
+DIAG(err_interface_stubs, CLASS_ERROR, (unsigned)diag::Severity::Error, "clang-ifs (-emit-iterface-stubs): %0", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_invalid_vfs_overlay, CLASS_ERROR, (unsigned)diag::Severity::Fatal, "invalid virtual filesystem overlay file '%0'", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_missing_module, CLASS_ERROR, (unsigned)diag::Severity::Fatal, "no module named '%0' declared in module map file '%1'", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_missing_module_name, CLASS_ERROR, (unsigned)diag::Severity::Fatal, "no module name provided; specify one with -fmodule-name=", 0, SFINAE_SubstitutionFailure, false, true, 0)

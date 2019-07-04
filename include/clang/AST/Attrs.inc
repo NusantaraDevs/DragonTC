@@ -3624,6 +3624,30 @@ public:
   static bool classof(const Attr *A) { return A->getKind() == attr::GuardedVar; }
 };
 
+class HIPPinnedShadowAttr : public InheritableAttr {
+public:
+  static HIPPinnedShadowAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) HIPPinnedShadowAttr(Loc, Ctx, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  HIPPinnedShadowAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::HIPPinnedShadow, R, SI, false, false)
+  {
+  }
+
+  HIPPinnedShadowAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::HIPPinnedShadow; }
+};
+
 class HotAttr : public InheritableAttr {
 public:
   static HotAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
@@ -5529,6 +5553,30 @@ public:
 
 
   static bool classof(const Attr *A) { return A->getKind() == attr::NoThrow; }
+};
+
+class NoUniqueAddressAttr : public InheritableAttr {
+public:
+  static NoUniqueAddressAttr *CreateImplicit(ASTContext &Ctx, SourceRange Loc = SourceRange()) {
+    auto *A = new (Ctx) NoUniqueAddressAttr(Loc, Ctx, 0);
+    A->setImplicit(true);
+    return A;
+  }
+
+  NoUniqueAddressAttr(SourceRange R, ASTContext &Ctx
+              , unsigned SI
+             )
+    : InheritableAttr(attr::NoUniqueAddress, R, SI, false, false)
+  {
+  }
+
+  NoUniqueAddressAttr *clone(ASTContext &C) const;
+  void printPretty(raw_ostream &OS,
+                   const PrintingPolicy &Policy) const;
+  const char *getSpelling() const;
+
+
+  static bool classof(const Attr *A) { return A->getKind() == attr::NoUniqueAddress; }
 };
 
 class NonNullAttr : public InheritableParamAttr {

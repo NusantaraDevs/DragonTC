@@ -491,6 +491,8 @@ OPTION(prefix_1, "emit-header-module", emit_header_module, Flag, Action_Group, I
        "Generate pre-compiled module file from a set of header files", nullptr, nullptr)
 OPTION(prefix_1, "emit-html", emit_html, Flag, Action_Group, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Output input source as HTML", nullptr, nullptr)
+OPTION(prefix_1, "emit-interface-stubs", emit_iterface_stubs, Flag, Action_Group, INVALID, nullptr, CC1Option, 0,
+       "Generate Inteface Stub Files.", nullptr, nullptr)
 OPTION(prefix_1, "emit-llvm-bc", emit_llvm_bc, Flag, Action_Group, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Build ASTs then convert to LLVM, emit .bc file", nullptr, nullptr)
 OPTION(prefix_1, "emit-llvm-only", emit_llvm_only, Flag, Action_Group, INVALID, nullptr, CC1Option | NoDriverOption, 0,
@@ -507,10 +509,6 @@ OPTION(prefix_1, "emit-obj", emit_obj, Flag, Action_Group, INVALID, nullptr, CC1
        "Emit native object files", nullptr, nullptr)
 OPTION(prefix_1, "emit-pch", emit_pch, Flag, Action_Group, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Generate pre-compiled header file", nullptr, nullptr)
-OPTION(prefix_1, "enable-split-dwarf=", enable_split_dwarf_EQ, Joined, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
-       "Set DWARF fission mode to either 'split' or 'single'", nullptr, "split,single")
-OPTION(prefix_1, "enable-split-dwarf", enable_split_dwarf, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
-       "Use DWARF fission in 'split' mode", nullptr, nullptr)
 OPTION(prefix_1, "enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang", enable_trivial_var_init_zero, Joined, INVALID, INVALID, nullptr, CC1Option, 0,
        "Trivial automatic variable initialization to zero is only here for benchmarks, it'll eventually be removed, and I'm OK with that because I'm only using it to benchmark", nullptr, nullptr)
 OPTION(prefix_3, "encoding=", _encoding_EQ, Joined, INVALID, fencoding_EQ, nullptr, 0, 0, nullptr, nullptr, nullptr)
@@ -825,6 +823,8 @@ OPTION(prefix_1, "femit-coverage-data", femit_coverage_data, Flag, INVALID, INVA
        "Instrument the program to emit gcov coverage data when run.", nullptr, nullptr)
 OPTION(prefix_1, "femit-coverage-notes", femit_coverage_notes, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Emit a gcov coverage notes file when compiling.", nullptr, nullptr)
+OPTION(prefix_1, "femit-debug-entry-values", femit_debug_entry_values, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
+       "Enables debug info about call site parameter's entry values", nullptr, nullptr)
 OPTION(prefix_1, "femulated-tls", femulated_tls, Flag, f_Group, INVALID, nullptr, CC1Option, 0,
        "Use emutls functions to access thread_local variables", nullptr, nullptr)
 OPTION(prefix_1, "fencode-extended-block-signature", fencode_extended_block_signature, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
@@ -2236,6 +2236,7 @@ OPTION(prefix_1, "init-only", init_only, Flag, Action_Group, INVALID, nullptr, C
 OPTION(prefix_1, "init", init, Separate, INVALID, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "install_name", install__name, Separate, INVALID, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "integrated-as", anonymous_32, Flag, INVALID, fintegrated_as, nullptr, DriverOption, 0, nullptr, nullptr, nullptr)
+OPTION(prefix_1, "interface-stub-version=", iterface_stub_version_EQ, JoinedOrSeparate, INVALID, INVALID, nullptr, CC1Option, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "internal-externc-isystem", internal_externc_isystem, JoinedOrSeparate, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Add directory to the internal system include search path with implicit extern \"C\" semantics; these are assumed to not be user-provided and are used to model system and standard headers' paths.", "<directory>", nullptr)
 OPTION(prefix_1, "internal-isystem", internal_isystem, JoinedOrSeparate, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
@@ -2369,6 +2370,7 @@ OPTION(prefix_1, "mconsole", mconsole, Joined, m_Group, INVALID, nullptr, Driver
 OPTION(prefix_1, "mconstant-cfstrings", mconstant_cfstrings, Flag, clang_ignored_m_Group, INVALID, nullptr, Ignored, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mconstructor-aliases", mconstructor_aliases, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Emit complete constructors and destructors as aliases when possible", nullptr, nullptr)
+OPTION(prefix_1, "mcpu=?", mcpu_EQ_QUESTION, Flag, INVALID, print_supported_cpus, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mcpu=", mcpu_EQ, Joined, m_Group, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mcrbits", mcrbits, Flag, m_ppc_Features_Group, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mcrc", mcrc, Flag, m_Group, INVALID, nullptr, 0, 0,
@@ -2731,6 +2733,8 @@ OPTION(prefix_1, "mno-retpoline", mno_retpoline, Flag, m_Group, INVALID, nullptr
 OPTION(prefix_1, "mno-rtd", mno_rtd, Flag, m_Group, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mno-rtm", mno_rtm, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mno-sahf", mno_sahf, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
+OPTION(prefix_1, "mno-save-restore", mno_save_restore, Flag, m_riscv_Features_Group, INVALID, nullptr, 0, 0,
+       "Disable using library calls for save and restore", nullptr, nullptr)
 OPTION(prefix_1, "mno-sgx", mno_sgx, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mno-sha", mno_sha, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mno-shstk", mno_shstk, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
@@ -2858,6 +2862,8 @@ OPTION(prefix_1, "mrtd", mrtd, Flag, m_Group, INVALID, nullptr, CC1Option, 0,
        "Make StdCall calling convention the default", nullptr, nullptr)
 OPTION(prefix_1, "mrtm", mrtm, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "msahf", msahf, Flag, m_x86_Features_Group, INVALID, nullptr, CoreOption, 0, nullptr, nullptr, nullptr)
+OPTION(prefix_1, "msave-restore", msave_restore, Flag, m_riscv_Features_Group, INVALID, nullptr, 0, 0,
+       "Enable using library calls for save and restore", nullptr, nullptr)
 OPTION(prefix_1, "msave-temp-labels", msave_temp_labels, Flag, INVALID, INVALID, nullptr, CC1Option | CC1AsOption | NoDriverOption, 0,
        "Save temporary labels in the symbol table. Note this may change .s semantics and shouldn't generally be used on compiler-generated code.", nullptr, nullptr)
 OPTION(prefix_1, "msecure-plt", msecure_plt, Flag, m_ppc_Features_Group, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
@@ -2910,6 +2916,7 @@ OPTION(prefix_1, "mtp=", mtp_mode_EQ, Joined, m_arm_Features_Group, INVALID, nul
        "Thread pointer access method (AArch32/AArch64 only)", nullptr, "soft,cp15,el0,el1,el2,el3")
 OPTION(prefix_1, "mtp", mtp, Separate, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Mode for reading thread pointer", nullptr, nullptr)
+OPTION(prefix_1, "mtune=?", mtune_EQ_QUESTION, Flag, INVALID, print_supported_cpus, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mtune=", mtune_EQ, Joined, m_Group, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mtvos-simulator-version-min=", mtvos_simulator_version_min_EQ, Joined, INVALID, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
 OPTION(prefix_1, "mtvos-version-min=", mtvos_version_min_EQ, Joined, m_Group, INVALID, nullptr, 0, 0, nullptr, nullptr, nullptr)
@@ -3189,7 +3196,7 @@ OPTION(prefix_4, "print-search-dirs", print_search_dirs, Flag, INVALID, INVALID,
        "Print the paths used for finding libraries and programs", nullptr, nullptr)
 OPTION(prefix_1, "print-stats", print_stats, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Print performance metrics and statistics", nullptr, nullptr)
-OPTION(prefix_4, "print-supported-cpus", _print_supported_cpus, Flag, CompileOnly_Group, INVALID, nullptr, CC1Option | CoreOption, 0,
+OPTION(prefix_4, "print-supported-cpus", print_supported_cpus, Flag, CompileOnly_Group, INVALID, nullptr, CC1Option | CoreOption, 0,
        "Print supported cpu models for the given target (if target is not specified, it will print the supported cpus for the default target)", nullptr, nullptr)
 OPTION(prefix_4, "print-target-triple", print_target_triple, Flag, INVALID, INVALID, nullptr, 0, 0,
        "Print the normalized target triple", nullptr, nullptr)
@@ -3320,8 +3327,6 @@ OPTION(prefix_1, "split-dwarf-file", split_dwarf_file, Separate, INVALID, INVALI
        "Name of the split dwarf debug info file to encode in the object file", nullptr, nullptr)
 OPTION(prefix_1, "split-dwarf-output", split_dwarf_output, Separate, INVALID, INVALID, nullptr, CC1Option | CC1AsOption | NoDriverOption, 0,
        "File name to use for split dwarf debug info output", nullptr, nullptr)
-OPTION(prefix_1, "split-dwarf", split_dwarf, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
-       "Split out the dwarf .dwo sections", nullptr, nullptr)
 OPTION(prefix_1, "split-stacks", split_stacks, Flag, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,
        "Try to use a split stack if possible.", nullptr, nullptr)
 OPTION(prefix_1, "stack-protector-buffer-size", stack_protector_buffer_size, Separate, INVALID, INVALID, nullptr, CC1Option | NoDriverOption, 0,

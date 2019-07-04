@@ -1024,7 +1024,7 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::AT_ReturnTypestate;	 // "return_typestate"
     }
     break;
-  case 17:	 // 6 strings to match.
+  case 17:	 // 7 strings to match.
     switch (Name[0]) {
     default: break;
     case 'a':	 // 2 strings to match.
@@ -1040,6 +1040,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
         return ParsedAttr::AT_AssertCapability;	 // "assert_capability"
       }
       break;
+    case 'h':	 // 1 string to match.
+      if (memcmp(Name.data()+1, "ip_pinned_shadow", 16) != 0)
+        break;
+      return ParsedAttr::AT_HIPPinnedShadow;	 // "hip_pinned_shadow"
     case 'o':	 // 2 strings to match.
       switch (Name[1]) {
       default: break;
@@ -1766,6 +1770,10 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       return ParsedAttr::IgnoredAttribute;	 // "__device_builtin__"
     }
     break;
+  case 21:	 // 1 string to match.
+    if (memcmp(Name.data()+0, "__hip_pinned_shadow__", 21) != 0)
+      break;
+    return ParsedAttr::AT_HIPPinnedShadow;	 // "__hip_pinned_shadow__"
   case 31:	 // 2 strings to match.
     if (memcmp(Name.data()+0, "__device_builtin_", 17) != 0)
       break;
@@ -2491,9 +2499,13 @@ static ParsedAttr::Kind getAttrKind(StringRef Name, ParsedAttr::Syntax Syntax) {
       break;
     }
     break;
-  case 19:	 // 8 strings to match.
+  case 19:	 // 9 strings to match.
     switch (Name[0]) {
     default: break;
+    case ':':	 // 1 string to match.
+      if (memcmp(Name.data()+1, ":no_unique_address", 18) != 0)
+        break;
+      return ParsedAttr::AT_NoUniqueAddress;	 // "::no_unique_address"
     case 'c':	 // 6 strings to match.
       if (memcmp(Name.data()+1, "lang::", 6) != 0)
         break;

@@ -237,6 +237,7 @@
     stackrestore,                              // llvm.stackrestore
     stacksave,                                 // llvm.stacksave
     strip_invariant_group,                     // llvm.strip.invariant.group
+    test_set_loop_iterations,                  // llvm.test.set.loop.iterations
     thread_pointer,                            // llvm.thread.pointer
     trap,                                      // llvm.trap
     trunc,                                     // llvm.trunc
@@ -506,6 +507,10 @@
     amdgcn_ds_fmin,                            // llvm.amdgcn.ds.fmin
     amdgcn_ds_gws_barrier,                     // llvm.amdgcn.ds.gws.barrier
     amdgcn_ds_gws_init,                        // llvm.amdgcn.ds.gws.init
+    amdgcn_ds_gws_sema_br,                     // llvm.amdgcn.ds.gws.sema.br
+    amdgcn_ds_gws_sema_p,                      // llvm.amdgcn.ds.gws.sema.p
+    amdgcn_ds_gws_sema_release_all,            // llvm.amdgcn.ds.gws.sema.release.all
+    amdgcn_ds_gws_sema_v,                      // llvm.amdgcn.ds.gws.sema.v
     amdgcn_ds_ordered_add,                     // llvm.amdgcn.ds.ordered.add
     amdgcn_ds_ordered_swap,                    // llvm.amdgcn.ds.ordered.swap
     amdgcn_ds_permute,                         // llvm.amdgcn.ds.permute

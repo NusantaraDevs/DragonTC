@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget LLVMDemangle LLVMSupport LLVMTableGen llvm-tblgen LLVMCore LLVMFuzzMutate LLVMIRReader LLVMCodeGen LLVMSelectionDAG LLVMAsmPrinter LLVMMIRParser LLVMGlobalISel LLVMBinaryFormat LLVMBitReader LLVMBitWriter LLVMTransformUtils LLVMInstrumentation LLVMAggressiveInstCombine LLVMInstCombine LLVMScalarOpts LLVMipo LLVMVectorize LLVMObjCARCOpts LLVMCoroutines LLVMLinker LLVMAnalysis LLVMLTO LLVMMC LLVMMCParser LLVMMCDisassembler LLVMMCA LLVMObject LLVMObjectYAML LLVMOption LLVMRemarks LLVMDebugInfoDWARF LLVMDebugInfoMSF LLVMDebugInfoCodeView LLVMDebugInfoPDB LLVMSymbolize LLVMExecutionEngine LLVMInterpreter LLVMJITLink LLVMMCJIT LLVMOrcJIT LLVMRuntimeDyld LLVMTarget LLVMAArch64CodeGen LLVMAArch64AsmParser LLVMAArch64Disassembler LLVMAArch64Desc LLVMAArch64Info LLVMAArch64Utils LLVMARMCodeGen LLVMARMAsmParser LLVMARMDisassembler LLVMARMDesc LLVMARMInfo LLVMARMUtils LLVMBPFCodeGen LLVMBPFAsmParser LLVMBPFDisassembler LLVMBPFDesc LLVMBPFInfo LLVMX86CodeGen LLVMX86AsmParser LLVMX86Disassembler LLVMX86Desc LLVMX86Info LLVMX86Utils LLVMAsmParser LLVMLineEditor LLVMProfileData LLVMCoverage LLVMPasses LLVMTextAPI LLVMDlltoolDriver LLVMLibDriver LLVMXRay LLVMWindowsManifest PollyISL PollyPPCG Polly LLVMPolly LTO LLVMgold llvm-ar llvm-config llvm-lto llvm-profdata SampleAnalyzerPlugin CheckerDependencyHandlingAnalyzerPlugin CheckerOptionHandlingAnalyzerPlugin bugpoint dsymutil llc lli llvm-as llvm-bcanalyzer llvm-c-test llvm-cat llvm-cfi-verify llvm-cov llvm-cvtres llvm-cxxdump llvm-cxxfilt llvm-cxxmap llvm-diff llvm-dis llvm-dwarfdump llvm-dwp llvm-elfabi llvm-exegesis llvm-extract llvm-jitlink llvm-link llvm-lipo llvm-lto2 llvm-mc llvm-mca llvm-modextract llvm-mt llvm-nm llvm-objcopy llvm-objdump llvm-opt-report llvm-pdbutil llvm-rc llvm-readobj llvm-rtdyld llvm-size llvm-split llvm-stress llvm-strings llvm-symbolizer llvm-undname llvm-xray obj2yaml opt Remarks sancov sanstats verify-uselistorder yaml2obj)
+foreach(_expectedTarget LLVMDemangle LLVMSupport LLVMTableGen llvm-tblgen LLVMCore LLVMFuzzMutate LLVMIRReader LLVMCodeGen LLVMSelectionDAG LLVMAsmPrinter LLVMMIRParser LLVMGlobalISel LLVMBinaryFormat LLVMBitReader LLVMBitWriter LLVMTransformUtils LLVMInstrumentation LLVMAggressiveInstCombine LLVMInstCombine LLVMScalarOpts LLVMipo LLVMVectorize LLVMObjCARCOpts LLVMCoroutines LLVMLinker LLVMAnalysis LLVMLTO LLVMMC LLVMMCParser LLVMMCDisassembler LLVMMCA LLVMObject LLVMObjectYAML LLVMOption LLVMRemarks LLVMDebugInfoDWARF LLVMDebugInfoGSYM LLVMDebugInfoMSF LLVMDebugInfoCodeView LLVMDebugInfoPDB LLVMSymbolize LLVMExecutionEngine LLVMInterpreter LLVMJITLink LLVMMCJIT LLVMOrcJIT LLVMRuntimeDyld LLVMTarget LLVMAArch64CodeGen LLVMAArch64AsmParser LLVMAArch64Disassembler LLVMAArch64Desc LLVMAArch64Info LLVMAArch64Utils LLVMARMCodeGen LLVMARMAsmParser LLVMARMDisassembler LLVMARMDesc LLVMARMInfo LLVMARMUtils LLVMBPFCodeGen LLVMBPFAsmParser LLVMBPFDisassembler LLVMBPFDesc LLVMBPFInfo LLVMX86CodeGen LLVMX86AsmParser LLVMX86Disassembler LLVMX86Desc LLVMX86Info LLVMX86Utils LLVMAsmParser LLVMLineEditor LLVMProfileData LLVMCoverage LLVMPasses LLVMTextAPI LLVMDlltoolDriver LLVMLibDriver LLVMXRay LLVMWindowsManifest PollyISL PollyPPCG Polly LLVMPolly LTO LLVMgold llvm-ar llvm-config llvm-lto llvm-profdata SampleAnalyzerPlugin CheckerDependencyHandlingAnalyzerPlugin CheckerOptionHandlingAnalyzerPlugin bugpoint dsymutil llc lli llvm-as llvm-bcanalyzer llvm-c-test llvm-cat llvm-cfi-verify llvm-cov llvm-cvtres llvm-cxxdump llvm-cxxfilt llvm-cxxmap llvm-diff llvm-dis llvm-dwarfdump llvm-dwp llvm-elfabi llvm-exegesis llvm-extract llvm-jitlink llvm-link llvm-lipo llvm-lto2 llvm-mc llvm-mca llvm-modextract llvm-mt llvm-nm llvm-objcopy llvm-objdump llvm-opt-report llvm-pdbutil llvm-rc llvm-readobj llvm-rtdyld llvm-size llvm-split llvm-stress llvm-strings llvm-symbolizer llvm-undname llvm-xray obj2yaml opt Remarks sancov sanstats verify-uselistorder yaml2obj)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -123,7 +123,7 @@ set_target_properties(LLVMMIRParser PROPERTIES
 add_library(LLVMGlobalISel STATIC IMPORTED)
 
 set_target_properties(LLVMGlobalISel PROPERTIES
-  INTERFACE_LINK_LIBRARIES "LLVMAnalysis;LLVMCodeGen;LLVMCore;LLVMMC;LLVMSupport;LLVMTarget;LLVMTransformUtils"
+  INTERFACE_LINK_LIBRARIES "LLVMAnalysis;LLVMCodeGen;LLVMCore;LLVMMC;LLVMSelectionDAG;LLVMSupport;LLVMTarget;LLVMTransformUtils"
 )
 
 # Create imported target LLVMBinaryFormat
@@ -292,6 +292,13 @@ add_library(LLVMDebugInfoDWARF STATIC IMPORTED)
 
 set_target_properties(LLVMDebugInfoDWARF PROPERTIES
   INTERFACE_LINK_LIBRARIES "LLVMBinaryFormat;LLVMMC;LLVMObject;LLVMSupport"
+)
+
+# Create imported target LLVMDebugInfoGSYM
+add_library(LLVMDebugInfoGSYM STATIC IMPORTED)
+
+set_target_properties(LLVMDebugInfoGSYM PROPERTIES
+  INTERFACE_LINK_LIBRARIES "LLVMSupport"
 )
 
 # Create imported target LLVMDebugInfoMSF
@@ -543,7 +550,7 @@ set_target_properties(LLVMAsmParser PROPERTIES
 add_library(LLVMLineEditor STATIC IMPORTED)
 
 set_target_properties(LLVMLineEditor PROPERTIES
-  INTERFACE_LINK_LIBRARIES "LLVMSupport;LLVMSupport"
+  INTERFACE_LINK_LIBRARIES "LLVMSupport"
 )
 
 # Create imported target LLVMProfileData
@@ -592,7 +599,7 @@ set_target_properties(LLVMLibDriver PROPERTIES
 add_library(LLVMXRay STATIC IMPORTED)
 
 set_target_properties(LLVMXRay PROPERTIES
-  INTERFACE_LINK_LIBRARIES "LLVMSupport;LLVMObject;LLVMObject;LLVMSupport"
+  INTERFACE_LINK_LIBRARIES "LLVMObject;LLVMSupport"
 )
 
 # Create imported target LLVMWindowsManifest

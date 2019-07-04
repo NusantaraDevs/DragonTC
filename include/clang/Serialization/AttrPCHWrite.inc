@@ -744,6 +744,13 @@ Record.push_back(SA->getExtensibility());
     Record.push_back(A->getSpellingListIndex());
     break;
   }
+  case attr::HIPPinnedShadow: {
+    const auto *SA = cast<HIPPinnedShadowAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
   case attr::Hot: {
     const auto *SA = cast<HotAttr>(A);
     Record.push_back(SA->isInherited());
@@ -1152,6 +1159,13 @@ Record.push_back(SA->getInterrupt());
   }
   case attr::NoThrow: {
     const auto *SA = cast<NoThrowAttr>(A);
+    Record.push_back(SA->isInherited());
+    Record.push_back(A->isImplicit());
+    Record.push_back(A->getSpellingListIndex());
+    break;
+  }
+  case attr::NoUniqueAddress: {
+    const auto *SA = cast<NoUniqueAddressAttr>(A);
     Record.push_back(SA->isInherited());
     Record.push_back(A->isImplicit());
     Record.push_back(A->getSpellingListIndex());

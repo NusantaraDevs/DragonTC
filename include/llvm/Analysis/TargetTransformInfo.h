@@ -27,6 +27,9 @@
 #include "llvm/Pass.h"
 #include "llvm/Support/AtomicOrdering.h"
 #include "llvm/Support/DataTypes.h"
+#include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/IR/Dominators.h"
 #include <functional>
 
 namespace llvm {
@@ -73,6 +76,30 @@ struct MemIntrinsicInfo {
     return (Ordering == AtomicOrdering::NotAtomic ||
             Ordering == AtomicOrdering::Unordered) && !IsVolatile;
   }
+};
+
+/// Attributes of a target dependent hardware loop.
+struct HardwareLoopInfo {
+  HardwareLoopInfo() = delete;
+  HardwareLoopInfo(Loop *L) : L(L) {}
+  Loop *L = nullptr;
+  BasicBlock *ExitBlock = nullptr;
+  BranchInst *ExitBranch = nullptr;
+  const SCEV *ExitCount = nullptr;
+  IntegerType *CountType = nullptr;
+  Value *LoopDecrement = nullptr; // Decrement the loop counter by this
+                                  // value in every iteration.
+  bool IsNestingLegal = false;    // Can a hardware loop be a parent to
+                                  // another hardware loop?
+  bool CounterInReg = false;      // Should loop counter be updated in
+                                  // the loop via a phi?
+  bool PerformEntryTest = false;  // Generate the intrinsic which also performs
+                                  // icmp ne zero on the loop counter value and
+                                  // produces an i1 to guard the loop entry.
+  bool isHardwareLoopCandidate(ScalarEvolution &SE, LoopInfo &LI,
+                               DominatorTree &DT, bool ForceNestedLoop = false,
+                               bool ForceHardwareLoopPHI = false);
+  bool canAnalyze(LoopInfo &LI);
 };
 
 /// This pass provides access to the codegen interfaces that are needed
@@ -448,23 +475,6 @@ public:
   void getUnrollingPreferences(Loop *L, ScalarEvolution &,
                                UnrollingPreferences &UP) const;
 
-  /// Attributes of a target dependent hardware loop.
-  struct HardwareLoopInfo {
-    HardwareLoopInfo()        = delete;
-    HardwareLoopInfo(Loop *L) : L(L) { }
-    Loop *L                   = nullptr;
-    BasicBlock *ExitBlock     = nullptr;
-    BranchInst *ExitBranch    = nullptr;
-    const SCEV *ExitCount     = nullptr;
-    IntegerType *CountType    = nullptr;
-    Value *LoopDecrement      = nullptr;  // Decrement the loop counter by this
-                                          // value in every iteration.
-    bool IsNestingLegal       = false;    // Can a hardware loop be a parent to
-                                          // another hardware loop?
-    bool CounterInReg         = false;    // Should loop counter be updated in
-                                          // the loop via a phi?
-  };
-
   /// Query the target whether it would be profitable to convert the given loop
   /// into a hardware loop.
   bool isHardwareLoopProfitable(Loop *L, ScalarEvolution &SE,
@@ -624,17 +634,35 @@ public:
   /// Don't restrict interleaved unrolling to small loops.
   bool enableAggressiveInterleaving(bool LoopHasReductions) const;
 
-  /// If not nullptr, enable inline expansion of memcmp. IsZeroCmp is
-  /// true if this is the expansion of memcmp(p1, p2, s) == 0.
+  /// Returns options for expansion of memcmp. IsZeroCmp is
+  // true if this is the expansion of memcmp(p1, p2, s) == 0.
   struct MemCmpExpansionOptions {
+    // Return true if memcmp expansion is enabled.
+    operator bool() const { return MaxNumLoads > 0; }
+
+    // Maximum number of load operations.
+    unsigned MaxNumLoads = 0;
+
     // The list of available load sizes (in bytes), sorted in decreasing order.
     SmallVector<unsigned, 8> LoadSizes;
+
+    // For memcmp expansion when the memcmp result is only compared equal or
+    // not-equal to 0, allow up to this number of load pairs per block. As an
+    // example, this may allow 'memcmp(a, b, 3) == 0' in a single block:
+    //   a0 = load2bytes &a[0]
+    //   b0 = load2bytes &b[0]
+    //   a2 = load1byte  &a[2]
+    //   b2 = load1byte  &b[2]
+    //   r  = cmp eq (a0 ^ b0 | a2 ^ b2), 0
+    unsigned NumLoadsPerBlock = 1;
+
     // Set to true to allow overlapping loads. For example, 7-byte compares can
     // be done with two 4-byte compares instead of 4+2+1-byte compares. This
     // requires all loads in LoadSizes to be doable in an unaligned way.
     bool AllowOverlappingLoads = false;
   };
-  const MemCmpExpansionOptions *enableMemCmpExpansion(bool IsZeroCmp) const;
+  MemCmpExpansionOptions enableMemCmpExpansion(bool OptSize,
+                                               bool IsZeroCmp) const;
 
   /// Enable matching of interleaved access groups.
   bool enableInterleavedAccessVectorization() const;
@@ -1156,8 +1184,8 @@ public:
                                                     unsigned VF) = 0;
   virtual bool supportsEfficientVectorElementLoadStore() = 0;
   virtual bool enableAggressiveInterleaving(bool LoopHasReductions) = 0;
-  virtual const MemCmpExpansionOptions *enableMemCmpExpansion(
-      bool IsZeroCmp) const = 0;
+  virtual MemCmpExpansionOptions
+  enableMemCmpExpansion(bool OptSize, bool IsZeroCmp) const = 0;
   virtual bool enableInterleavedAccessVectorization() = 0;
   virtual bool enableMaskedInterleavedAccessVectorization() = 0;
   virtual bool isFPVectorizationPotentiallyUnsafe() = 0;
@@ -1458,9 +1486,9 @@ public:
   bool enableAggressiveInterleaving(bool LoopHasReductions) override {
     return Impl.enableAggressiveInterleaving(LoopHasReductions);
   }
-  const MemCmpExpansionOptions *enableMemCmpExpansion(
-      bool IsZeroCmp) const override {
-    return Impl.enableMemCmpExpansion(IsZeroCmp);
+  MemCmpExpansionOptions enableMemCmpExpansion(bool OptSize,
+                                               bool IsZeroCmp) const override {
+    return Impl.enableMemCmpExpansion(OptSize, IsZeroCmp);
   }
   bool enableInterleavedAccessVectorization() override {
     return Impl.enableInterleavedAccessVectorization();

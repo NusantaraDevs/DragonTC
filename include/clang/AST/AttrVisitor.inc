@@ -376,6 +376,10 @@
   bool VisitGuardedVarAttr(GuardedVarAttr *A) {
     return true; 
   }
+  bool TraverseHIPPinnedShadowAttr(HIPPinnedShadowAttr *A);
+  bool VisitHIPPinnedShadowAttr(HIPPinnedShadowAttr *A) {
+    return true; 
+  }
   bool TraverseHotAttr(HotAttr *A);
   bool VisitHotAttr(HotAttr *A) {
     return true; 
@@ -602,6 +606,10 @@
   }
   bool TraverseNoThrowAttr(NoThrowAttr *A);
   bool VisitNoThrowAttr(NoThrowAttr *A) {
+    return true; 
+  }
+  bool TraverseNoUniqueAddressAttr(NoUniqueAddressAttr *A);
+  bool VisitNoUniqueAddressAttr(NoUniqueAddressAttr *A) {
     return true; 
   }
   bool TraverseNonNullAttr(NonNullAttr *A);
@@ -2045,6 +2053,15 @@ bool VISITORCLASS<Derived>::TraverseGuardedVarAttr(GuardedVarAttr *A) {
 }
 
 template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseHIPPinnedShadowAttr(HIPPinnedShadowAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitHIPPinnedShadowAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
 bool VISITORCLASS<Derived>::TraverseHotAttr(HotAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
@@ -2568,6 +2585,15 @@ bool VISITORCLASS<Derived>::TraverseNoThrowAttr(NoThrowAttr *A) {
   if (!getDerived().VisitAttr(A))
     return false;
   if (!getDerived().VisitNoThrowAttr(A))
+    return false;
+  return true;
+}
+
+template <typename Derived>
+bool VISITORCLASS<Derived>::TraverseNoUniqueAddressAttr(NoUniqueAddressAttr *A) {
+  if (!getDerived().VisitAttr(A))
+    return false;
+  if (!getDerived().VisitNoUniqueAddressAttr(A))
     return false;
   return true;
 }
@@ -4022,6 +4048,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseGuardedByAttr(cast<GuardedByAttr>(A));
     case attr::GuardedVar:
       return getDerived().TraverseGuardedVarAttr(cast<GuardedVarAttr>(A));
+    case attr::HIPPinnedShadow:
+      return getDerived().TraverseHIPPinnedShadowAttr(cast<HIPPinnedShadowAttr>(A));
     case attr::Hot:
       return getDerived().TraverseHotAttr(cast<HotAttr>(A));
     case attr::IBAction:
@@ -4136,6 +4164,8 @@ bool VISITORCLASS<Derived>::TraverseAttr(Attr *A) {
       return getDerived().TraverseNoThreadSafetyAnalysisAttr(cast<NoThreadSafetyAnalysisAttr>(A));
     case attr::NoThrow:
       return getDerived().TraverseNoThrowAttr(cast<NoThrowAttr>(A));
+    case attr::NoUniqueAddress:
+      return getDerived().TraverseNoUniqueAddressAttr(cast<NoUniqueAddressAttr>(A));
     case attr::NonNull:
       return getDerived().TraverseNonNullAttr(cast<NonNullAttr>(A));
     case attr::NotTailCalled:

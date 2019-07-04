@@ -1,15 +1,15 @@
 # This file allows users to call find_package(Polly) and pick up our targets.
 
 find_package(LLVM REQUIRED CONFIG
-             HINTS "/home/najahi/dragontc/cmake/lib64/cmake/llvm")
+             HINTS "/home/najahi/dtc/cmake/lib64/cmake/llvm")
 
 set(Polly_CMAKE_DIR ${CMAKE_CURRENT_LIST_DIR})
 set(Polly_BUNDLED_ISL ON)
 set(Polly_ENABLE_GPGPU_CODEGEN OFF)
 
 set(Polly_DEFINITIONS ${LLVM_DEFINITIONS})
-set(Polly_INCLUDE_DIRS /home/najahi/dragontc/out/9.0/include;/home/najahi/dragontc/out/9.0/include/polly ${LLVM_INCLUDE_DIRS})
-set(Polly_LIBRARY_DIRS /home/najahi/dragontc/out/9.0/lib64)
+set(Polly_INCLUDE_DIRS /home/najahi/dtc/out/9.0/include;/home/najahi/dtc/out/9.0/include/polly ${LLVM_INCLUDE_DIRS})
+set(Polly_LIBRARY_DIRS /home/najahi/dtc/out/9.0/lib64)
 set(Polly_EXPORTED_TARGETS Polly;PollyISL;LLVMPolly)
 set(Polly_LIBRARIES ${LLVM_LIBRARIES} ${Polly_EXPORTED_TARGETS})
 

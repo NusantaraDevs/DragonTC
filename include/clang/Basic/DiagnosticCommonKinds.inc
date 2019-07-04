@@ -19,6 +19,7 @@ DIAG(err_expected_either, CLASS_ERROR, (unsigned)diag::Severity::Error, "expecte
 DIAG(err_expected_namespace_name, CLASS_ERROR, (unsigned)diag::Severity::Error, "expected namespace name", 0, SFINAE_SubstitutionFailure, false, true, 4)
 DIAG(err_expected_string_literal, CLASS_ERROR, (unsigned)diag::Severity::Error, "expected string literal %select{in %1|for diagnostic message in static_assert|for optional message in 'availability' attribute|for %select{language|source container}1 name in 'external_source_symbol' attribute}0", 0, SFINAE_SubstitutionFailure, false, true, 1)
 DIAG(err_file_modified, CLASS_ERROR, (unsigned)diag::Severity::Fatal, "file '%0' modified since it was first processed", 0, SFINAE_SubstitutionFailure, false, true, 0)
+DIAG(err_file_too_large, CLASS_ERROR, (unsigned)diag::Severity::Error, "sorry, unsupported: file '%0' is too large for Clang to process", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_fixed_point_not_enabled, CLASS_ERROR, (unsigned)diag::Severity::Error, "compile with '-ffixed-point' to enable fixed point types", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_friend_decl_spec, CLASS_ERROR, (unsigned)diag::Severity::Error, "'%0' is invalid in friend declarations", 0, SFINAE_SubstitutionFailure, false, true, 0)
 DIAG(err_integer_literal_too_large, CLASS_ERROR, (unsigned)diag::Severity::Error, "integer literal is too large to be represented in any %select{signed |}0integer type", 0, SFINAE_SubstitutionFailure, false, true, 0)

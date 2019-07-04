@@ -58,6 +58,7 @@ StructRet,
 SwiftError,
 SwiftSelf,
 UWTable,
+WillReturn,
 WriteOnly,
 ZExt,
 #endif
@@ -123,6 +124,7 @@ static Attribute::AttrKind getAttrKindFromName(StringRef AttrName) {
     .Case("swifterror", Attribute::SwiftError)
     .Case("swiftself", Attribute::SwiftSelf)
     .Case("uwtable", Attribute::UWTable)
+    .Case("willreturn", Attribute::WillReturn)
     .Case("writeonly", Attribute::WriteOnly)
     .Case("zeroext", Attribute::ZExt)
     .Default(Attribute::None);
@@ -448,6 +450,11 @@ struct SwiftSelfAttr : EnumAttr {
 struct UWTableAttr : EnumAttr {
   static enum Attribute::AttrKind getKind() {
     return llvm::Attribute::UWTable;
+  }
+};
+struct WillReturnAttr : EnumAttr {
+  static enum Attribute::AttrKind getKind() {
+    return llvm::Attribute::WillReturn;
   }
 };
 struct WriteOnlyAttr : EnumAttr {
